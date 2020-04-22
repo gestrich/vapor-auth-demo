@@ -11,13 +11,8 @@ public func configure(_ app: Application) throws {
     try routes(app)
     
     app.databases.use(.sqlite(.file("db.sqlite")), as: .sqlite)
-    
-    // Sessions
-    app.middleware.use(app.sessions.middleware)
     app.sessions.use(.fluent)
+    app.middleware.use(app.sessions.middleware)
     app.migrations.add(SessionRecord.migration)
-    
-    
-    
     try app.autoMigrate().wait()
 }
