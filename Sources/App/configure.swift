@@ -1,4 +1,6 @@
 import Vapor
+import Fluent
+import FluentSQLiteDriver
 
 // configures your application
 public func configure(_ app: Application) throws {
@@ -7,4 +9,15 @@ public func configure(_ app: Application) throws {
 
     // register routes
     try routes(app)
+    
+    app.databases.use(.sqlite(.file("db.sqlite")), as: .sqlite)
+    
+    // Sessions
+    app.middleware.use(app.sessions.middleware)
+    app.sessions.use(.fluent)
+    app.migrations.add(SessionRecord.migration)
+    
+    
+    
+    try app.autoMigrate().wait()
 }
